@@ -1,0 +1,469 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Referência de ícones do Font Awesome</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        .icon-card {
+            transition: all 0.3s ease;
+        }
+        
+        .icon-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .copied {
+            animation: pulse 1s;
+        }
+        
+        @keyframes pulse {
+            0% { background-color: #4ade80; }
+            100% { background-color: white; }
+        }
+
+        .pagination-btn {
+            transition: all 0.2s ease;
+        }
+
+        .pagination-btn:hover:not(.active) {
+            background-color: #e5e7eb;
+        }
+
+        .pagination-btn.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-7xl mx-auto">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">Referência de ícones do Font Awesome</h1>
+            <p class="text-gray-600 max-w-2xl mx-auto">Navegue pela coleção de ícones do Font Awesome e clique em qualquer cartão para copiar o código do ícone para sua área de transferência.</p>
+            
+            <div class="mt-6 flex flex-col md:flex-row justify-center items-center gap-4">
+                <div class="relative w-full md:w-96">
+                    <input type="text" id="search" placeholder="Procurar ícones..." class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10">
+                    <i class="fas fa-search absolute left-3 top-3.5 text-gray-400"></i>
+                </div>
+                <select id="category-filter" class="px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                    <option value="all">Todas as Categorias</option>
+                    <option value="solid">Solid</option>
+                    <option value="regular">Regular</option>
+                    <option value="brands">Brands</option>
+                </select>
+            </div>
+        </header>
+        
+        <div id="icons-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            <!-- Icons will be populated here -->
+        </div>
+        
+        <div id="pagination" class="flex justify-center mt-8 flex-wrap gap-2">
+            <!-- Pagination buttons will be added here -->
+        </div>
+        
+        <div id="loading" class="flex justify-center items-center py-10">
+            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        </div>
+        
+        <div id="no-results" class="hidden text-center py-10">
+            <i class="fas fa-search text-4xl text-gray-400 mb-3"></i>
+            <p class="text-gray-600 text-lg">No icons found matching your search.</p>
+        </div>
+        
+        <footer class="mt-10 text-center text-gray-600 text-sm py-4">
+            <p>Esta é uma ferramenta de referência para ícones do Font Awesome. Clique em qualquer ícone para copiar seu código HTML. </p>
+        </footer>
+    </div>
+    
+    <!-- Toast notification -->
+    <div id="toast" class="fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 flex items-center z-50">
+        <i class="fas fa-check-circle mr-2"></i>
+        <span id="toast-message">Copied to clipboard!</span>
+    </div>
+    
+    <script>
+        // Icon data - expanded list of Font Awesome icons
+        const iconData = [
+// Solid icons
+            { name: 'fa-solid fa-house', category: 'solid' },
+            { name: 'fa-solid fa-user', category: 'solid' },
+            { name: 'fa-solid fa-envelope', category: 'solid' },
+            { name: 'fa-solid fa-phone', category: 'solid' },
+            { name: 'fa-solid fa-lock', category: 'solid' },
+            { name: 'fa-solid fa-heart', category: 'solid' },
+            { name: 'fa-solid fa-star', category: 'solid' },
+            { name: 'fa-solid fa-check', category: 'solid' },
+            { name: 'fa-solid fa-xmark', category: 'solid' },
+            { name: 'fa-solid fa-search', category: 'solid' },
+            { name: 'fa-solid fa-gear', category: 'solid' },
+            { name: 'fa-solid fa-trash', category: 'solid' },
+            { name: 'fa-solid fa-pen-to-square', category: 'solid' },
+            { name: 'fa-solid fa-download', category: 'solid' },
+            { name: 'fa-solid fa-upload', category: 'solid' },
+            { name: 'fa-solid fa-share', category: 'solid' },
+            { name: 'fa-solid fa-calendar', category: 'solid' },
+            { name: 'fa-solid fa-clock', category: 'solid' },
+            { name: 'fa-solid fa-location-dot', category: 'solid' },
+            { name: 'fa-solid fa-cart-shopping', category: 'solid' },
+            { name: 'fa-solid fa-bell', category: 'solid' },
+            { name: 'fa-solid fa-bookmark', category: 'solid' },
+            { name: 'fa-solid fa-camera', category: 'solid' },
+            { name: 'fa-solid fa-comment', category: 'solid' },
+            { name: 'fa-solid fa-file', category: 'solid' },
+            { name: 'fa-solid fa-image', category: 'solid' },
+            { name: 'fa-solid fa-link', category: 'solid' },
+            { name: 'fa-solid fa-paperclip', category: 'solid' },
+            { name: 'fa-solid fa-print', category: 'solid' },
+            { name: 'fa-solid fa-save', category: 'solid' },
+            { name: 'fa-solid fa-tag', category: 'solid' },
+            { name: 'fa-solid fa-thumbs-up', category: 'solid' },
+            { name: 'fa-solid fa-thumbs-down', category: 'solid' },
+            { name: 'fa-solid fa-trophy', category: 'solid' },
+            { name: 'fa-solid fa-user-plus', category: 'solid' },
+            { name: 'fa-solid fa-users', category: 'solid' },
+            { name: 'fa-solid fa-video', category: 'solid' },
+            { name: 'fa-solid fa-volume-high', category: 'solid' },
+            { name: 'fa-solid fa-wifi', category: 'solid' },
+            { name: 'fa-solid fa-bars', category: 'solid' },
+            { name: 'fa-solid fa-chart-line', category: 'solid' },
+            { name: 'fa-solid fa-circle-info', category: 'solid' },
+            { name: 'fa-solid fa-circle-exclamation', category: 'solid' },
+            { name: 'fa-solid fa-circle-check', category: 'solid' },
+            { name: 'fa-solid fa-circle-xmark', category: 'solid' },
+            { name: 'fa-solid fa-clipboard', category: 'solid' },
+            { name: 'fa-solid fa-copy', category: 'solid' },
+            { name: 'fa-solid fa-credit-card', category: 'solid' },
+            { name: 'fa-solid fa-database', category: 'solid' },
+            { name: 'fa-solid fa-desktop', category: 'solid' },
+            { name: 'fa-solid fa-envelope-open', category: 'solid' },
+            { name: 'fa-solid fa-filter', category: 'solid' },
+            { name: 'fa-solid fa-flag', category: 'solid' },
+            { name: 'fa-solid fa-folder', category: 'solid' },
+            { name: 'fa-solid fa-folder-open', category: 'solid' },
+            { name: 'fa-solid fa-globe', category: 'solid' },
+            { name: 'fa-solid fa-home', category: 'solid' },
+            { name: 'fa-solid fa-key', category: 'solid' },
+            { name: 'fa-solid fa-list', category: 'solid' },
+            { name: 'fa-solid fa-map', category: 'solid' },
+            { name: 'fa-solid fa-message', category: 'solid' },
+            { name: 'fa-solid fa-mobile-screen', category: 'solid' },
+            { name: 'fa-solid fa-paper-plane', category: 'solid' },
+            { name: 'fa-solid fa-pause', category: 'solid' },
+            { name: 'fa-solid fa-play', category: 'solid' },
+            { name: 'fa-solid fa-plus', category: 'solid' },
+            { name: 'fa-solid fa-minus', category: 'solid' },
+            { name: 'fa-solid fa-question', category: 'solid' },
+            { name: 'fa-solid fa-refresh', category: 'solid' },
+            { name: 'fa-solid fa-rotate', category: 'solid' },
+            { name: 'fa-solid fa-shield', category: 'solid' },
+            { name: 'fa-solid fa-shopping-bag', category: 'solid' },
+            { name: 'fa-solid fa-sign-out', category: 'solid' },
+            { name: 'fa-solid fa-sliders', category: 'solid' },
+            { name: 'fa-solid fa-sort', category: 'solid' },
+            { name: 'fa-solid fa-table', category: 'solid' },
+            
+            // Regular icons
+            { name: 'fa-regular fa-heart', category: 'regular' },
+            { name: 'fa-regular fa-star', category: 'regular' },
+            { name: 'fa-regular fa-user', category: 'regular' },
+            { name: 'fa-regular fa-envelope', category: 'regular' },
+            { name: 'fa-regular fa-clock', category: 'regular' },
+            { name: 'fa-regular fa-calendar', category: 'regular' },
+            { name: 'fa-regular fa-comment', category: 'regular' },
+            { name: 'fa-regular fa-file', category: 'regular' },
+            { name: 'fa-regular fa-image', category: 'regular' },
+            { name: 'fa-regular fa-bookmark', category: 'regular' },
+            { name: 'fa-regular fa-bell', category: 'regular' },
+            { name: 'fa-regular fa-circle', category: 'regular' },
+            { name: 'fa-regular fa-clipboard', category: 'regular' },
+            { name: 'fa-regular fa-copy', category: 'regular' },
+            { name: 'fa-regular fa-credit-card', category: 'regular' },
+            { name: 'fa-regular fa-eye', category: 'regular' },
+            { name: 'fa-regular fa-face-smile', category: 'regular' },
+            { name: 'fa-regular fa-flag', category: 'regular' },
+            { name: 'fa-regular fa-folder', category: 'regular' },
+            { name: 'fa-regular fa-folder-open', category: 'regular' },
+            
+            // Brand icons
+            { name: 'fa-brands fa-facebook', category: 'brands' },
+            { name: 'fa-brands fa-twitter', category: 'brands' },
+            { name: 'fa-brands fa-instagram', category: 'brands' },
+            { name: 'fa-brands fa-linkedin', category: 'brands' },
+            { name: 'fa-brands fa-youtube', category: 'brands' },
+            { name: 'fa-brands fa-github', category: 'brands' },
+            { name: 'fa-brands fa-google', category: 'brands' },
+            { name: 'fa-brands fa-apple', category: 'brands' },
+            { name: 'fa-brands fa-amazon', category: 'brands' },
+            { name: 'fa-brands fa-spotify', category: 'brands' },
+            { name: 'fa-brands fa-discord', category: 'brands' },
+            { name: 'fa-brands fa-dribbble', category: 'brands' },
+            { name: 'fa-brands fa-dropbox', category: 'brands' },
+            { name: 'fa-brands fa-figma', category: 'brands' },
+            { name: 'fa-brands fa-firefox', category: 'brands' },
+            { name: 'fa-brands fa-chrome', category: 'brands' },
+            { name: 'fa-brands fa-edge', category: 'brands' },
+            { name: 'fa-brands fa-safari', category: 'brands' },
+            { name: 'fa-brands fa-opera', category: 'brands' },
+            { name: 'fa-brands fa-paypal', category: 'brands' },
+{ name: 'fa-solid fa-tree', category: 'solid' },
+{ name: 'fa-solid fa-mountain', category: 'solid' },
+{ name: 'fa-solid fa-plane', category: 'solid' },
+{ name: 'fa-solid fa-train', category: 'solid' },
+{ name: 'fa-solid fa-car', category: 'solid' },
+{ name: 'fa-solid fa-bicycle', category: 'solid' },
+{ name: 'fa-solid fa-hospital', category: 'solid' },
+{ name: 'fa-solid fa-stethoscope', category: 'solid' },
+{ name: 'fa-solid fa-briefcase-medical', category: 'solid' },
+{ name: 'fa-solid fa-dna', category: 'solid' },
+{ name: 'fa-solid fa-graduation-cap', category: 'solid' },
+{ name: 'fa-solid fa-book', category: 'solid' },
+{ name: 'fa-solid fa-school', category: 'solid' },
+{ name: 'fa-solid fa-chalkboard-teacher', category: 'solid' },
+{ name: 'fa-solid fa-bus', category: 'solid' },
+{ name: 'fa-solid fa-futbol', category: 'solid' },
+{ name: 'fa-solid fa-basketball', category: 'solid' },
+{ name: 'fa-solid fa-volleyball', category: 'solid' },
+{ name: 'fa-solid fa-music', category: 'solid' },
+{ name: 'fa-solid fa-guitar', category: 'solid' },
+{ name: 'fa-solid fa-microphone', category: 'solid' },
+{ name: 'fa-solid fa-film', category: 'solid' },
+{ name: 'fa-solid fa-theater-masks', category: 'solid' },
+{ name: 'fa-solid fa-gamepad', category: 'solid' },
+{ name: 'fa-solid fa-vr-cardboard', category: 'solid' },
+{ name: 'fa-solid fa-robot', category: 'solid' },
+{ name: 'fa-solid fa-rocket', category: 'solid' },
+{ name: 'fa-solid fa-globe-americas', category: 'solid' },
+{ name: 'fa-solid fa-umbrella-beach', category: 'solid' },
+{ name: 'fa-solid fa-wine-glass', category: 'solid' },
+{ name: 'fa-solid fa-cocktail', category: 'solid' },
+{ name: 'fa-solid fa-coffee', category: 'solid' },
+{ name: 'fa-solid fa-birthday-cake', category: 'solid' },
+{ name: 'fa-solid fa-ice-cream', category: 'solid' },
+{ name: 'fa-solid fa-pizza-slice', category: 'solid' },
+{ name: 'fa-solid fa-hamburger', category: 'solid' },
+{ name: 'fa-solid fa-apple-whole', category: 'solid' },
+{ name: 'fa-brands fa-tiktok', category: 'brands' },
+{ name: 'fa-brands fa-pinterest', category: 'brands' },
+{ name: 'fa-brands fa-snapchat', category: 'brands' },
+{ name: 'fa-brands fa-waze', category: 'brands' },
+{ name: 'fa-brands fa-stack-overflow', category: 'brands' },
+{ name: 'fa-brands fa-reddit', category: 'brands' },
+{ name: 'fa-brands fa-trello', category: 'brands' },
+{ name: 'fa-brands fa-medium', category: 'brands' }
+];
+        
+        const iconsContainer = document.getElementById('icons-container');
+        const searchInput = document.getElementById('search');
+        const categoryFilter = document.getElementById('category-filter');
+        const loading = document.getElementById('loading');
+        const noResults = document.getElementById('no-results');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toast-message');
+        const paginationContainer = document.getElementById('pagination');
+        
+        // Pagination settings
+        const iconsPerPage = 30;
+        let currentPage = 1;
+        let filteredIcons = [...iconData];
+        
+        // Function to display icons
+        function displayIcons(icons, page = 1) {
+            iconsContainer.innerHTML = '';
+            
+            if (icons.length === 0) {
+                noResults.classList.remove('hidden');
+                paginationContainer.innerHTML = '';
+                return;
+            } else {
+                noResults.classList.add('hidden');
+                
+                // Calculate pagination
+                const startIndex = (page - 1) * iconsPerPage;
+                const endIndex = startIndex + iconsPerPage;
+                const paginatedIcons = icons.slice(startIndex, endIndex);
+                
+                // Display icons
+                paginatedIcons.forEach(icon => {
+                    const iconCode = `<i class="${icon.name}"></i>`;
+                    const htmlCode = `&lt;i class="${icon.name}"&gt;&lt;/i&gt;`;
+                    
+                    const card = document.createElement('div');
+                    card.className = 'icon-card bg-white rounded-lg p-4 flex flex-col items-center cursor-pointer shadow-md hover:shadow-lg';
+                    card.innerHTML = `
+                        <div class="text-3xl mb-3">${iconCode}</div>
+                        <div class="text-sm font-medium text-gray-800 mb-1">${icon.name.split(' ').pop()}</div>
+                        <div class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-md w-full text-center overflow-hidden text-ellipsis">${htmlCode}</div>
+                    `;
+                    
+                    card.addEventListener('click', () => {
+                        const codeText = `<i class="${icon.name}"></i>`;
+                        navigator.clipboard.writeText(codeText).then(() => {
+                            showToast(`Copied: ${icon.name}`);
+                            card.classList.add('copied');
+                            setTimeout(() => {
+                                card.classList.remove('copied');
+                            }, 1000);
+                        });
+                    });
+                    
+                    iconsContainer.appendChild(card);
+                });
+                
+                // Update pagination
+                updatePagination(icons.length, page);
+            }
+        }
+        
+        // Function to update pagination
+        function updatePagination(totalIcons, currentPage) {
+            const totalPages = Math.ceil(totalIcons / iconsPerPage);
+            paginationContainer.innerHTML = '';
+            
+            if (totalPages <= 1) {
+                return;
+            }
+            
+            // Previous button
+            const prevBtn = document.createElement('button');
+            prevBtn.className = 'pagination-btn px-3 py-2 rounded-md border border-gray-300';
+            prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+            prevBtn.disabled = currentPage === 1;
+            prevBtn.style.opacity = currentPage === 1 ? '0.5' : '1';
+            prevBtn.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    goToPage(currentPage - 1);
+                }
+            });
+            paginationContainer.appendChild(prevBtn);
+            
+            // Page buttons
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+            
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+            
+            if (startPage > 1) {
+                const firstPageBtn = document.createElement('button');
+                firstPageBtn.className = 'pagination-btn px-3 py-2 rounded-md border border-gray-300';
+                firstPageBtn.textContent = '1';
+                firstPageBtn.addEventListener('click', () => goToPage(1));
+                paginationContainer.appendChild(firstPageBtn);
+                
+                if (startPage > 2) {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.className = 'px-3 py-2';
+                    ellipsis.textContent = '...';
+                    paginationContainer.appendChild(ellipsis);
+                }
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = `pagination-btn px-3 py-2 rounded-md border border-gray-300 ${i === currentPage ? 'active' : ''}`;
+                pageBtn.textContent = i;
+                pageBtn.addEventListener('click', () => goToPage(i));
+                paginationContainer.appendChild(pageBtn);
+            }
+            
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.className = 'px-3 py-2';
+                    ellipsis.textContent = '...';
+                    paginationContainer.appendChild(ellipsis);
+                }
+                
+                const lastPageBtn = document.createElement('button');
+                lastPageBtn.className = 'pagination-btn px-3 py-2 rounded-md border border-gray-300';
+                lastPageBtn.textContent = totalPages;
+                lastPageBtn.addEventListener('click', () => goToPage(totalPages));
+                paginationContainer.appendChild(lastPageBtn);
+            }
+            
+            // Next button
+            const nextBtn = document.createElement('button');
+            nextBtn.className = 'pagination-btn px-3 py-2 rounded-md border border-gray-300';
+            nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+            nextBtn.disabled = currentPage === totalPages;
+            nextBtn.style.opacity = currentPage === totalPages ? '0.5' : '1';
+            nextBtn.addEventListener('click', () => {
+                if (currentPage < totalPages) {
+                    goToPage(currentPage + 1);
+                }
+            });
+            paginationContainer.appendChild(nextBtn);
+        }
+        
+        // Function to go to a specific page
+        function goToPage(page) {
+            currentPage = page;
+            displayIcons(filteredIcons, currentPage);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // Function to filter icons
+        function filterIcons() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const category = categoryFilter.value;
+            
+            filteredIcons = iconData;
+            
+            if (category !== 'all') {
+                filteredIcons = filteredIcons.filter(icon => icon.category === category);
+            }
+            
+            if (searchTerm) {
+                filteredIcons = filteredIcons.filter(icon => 
+                    icon.name.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            currentPage = 1;
+            displayIcons(filteredIcons, currentPage);
+        }
+        
+        // Function to show toast notification
+        function showToast(message) {
+            toastMessage.textContent = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+            
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 2000);
+        }
+        
+        // Event listeners
+        searchInput.addEventListener('input', filterIcons);
+        categoryFilter.addEventListener('change', filterIcons);
+        
+        // Initialize
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                loading.style.display = 'none';
+                displayIcons(iconData, currentPage);
+            }, 500); // Simulate loading
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9560465bb74b621c',t:'MTc1MDk3ODM0NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
